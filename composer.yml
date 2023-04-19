@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  myapp:
+    image: python:3.9.16-bullseye
+    ports:
+      - "8888:8888"
+    volumes:
+      - myapp-data:/app/myconfig
+    command: python /app/app.py
+
+volumes:
+  myapp-data:
+    driver: local
