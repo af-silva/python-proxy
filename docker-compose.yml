@@ -6,6 +6,8 @@ services:
     image: pyproxy:latest
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     volumes:
       - pyproxy-data:/app
     logging:
