@@ -47,10 +47,9 @@ while True:
             if not data:
                 break
             try:
-                destination_socket.send(data)
-                logger.info(f'[+] Sent {len(data)} bytes to {dest_ip}:{dest_port}')
+                destination_socket.send(data)                
             except socket.error as err:
-                logger.error(f'[!] Error sending data to {dest_ip}:{dest_port}: {err}')
+                logger.error(f'[!] Error sending data to {dest_ip}:{dest_port}{err}')
                 break
         except socket.error as err:
             logger.error(f'[!] Error receiving data from {addr[0]}:{addr[1]}: {err}')
