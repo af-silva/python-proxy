@@ -1,23 +1,23 @@
 version: '3'
 
 services:
-  app:
+  pyproxy:
     image: python:3
     command: python3 /app/app.py
     ports:
       - "8080:8080"
     volumes:
-      - ./app:/app
-    environment:
-      - APP_SOURCE=/app/app.py
-      - APP_DESTINATION=1.2.3.4:80
+      - pyproxy-data:/app
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "5"
         
-volumes:
-  myapp-data:
-    driver: local
+networks:
+  bridge-network:
+    driver: bridge
         
+volumes:
+  pyproxy-data:
+    driver: local
