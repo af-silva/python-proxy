@@ -28,14 +28,24 @@ while True:
     logger.info(f'[*] Accepted connection from {addr[0]}:{addr[1]}')
 
     destination_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    destination_socket.connect((dest_ip, dest_port))
+    try:
+        destination_socket.settimeout(5) # set a timeout of 5 seconds for the connect() call
+        destination_socket.connect((dest_ip, dest_port))
+    except socket.timeout:
+        logger.error(f'[!] Connection to {dest_ip}:{dest_port} timed out')
+        client_socket.close()
+        continue
 
     while True:
-        data = client_socket.recv(4096)
-        if not data:
+        try:
+            data = client_socket.recv(4096)
+            if not data:
+                break
+            destination_socket.send(data)
+            logger.info(f'[+] Sent {len(data)} bytes to {dest_ip}:{dest_port}')
+        except BrokenPipeError:
+            logger.error(f'[!] Connection to {dest_ip}:{dest_port} closed unexpectedly')
             break
-        destination_socket.send(data)
-        logger.info(f'[+] Sent {len(data)} bytes to {dest_ip}:{dest_port}')
 
     destination_socket.close()
     client_socket.close()
