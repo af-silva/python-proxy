@@ -28,18 +28,18 @@ while True:
     logger.info(f'[*] Accepted connection from {addr[0]}:{addr[1]}')
 
     destination_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        destination_socket.settimeout(5) # set a timeout of 5 seconds for the connect() call
-        destination_socket.connect((dest_ip, dest_port))
-    except socket.timeout:
-        logger.error(f'[!] Connection to {dest_ip}:{dest_port} timed out')
-        client_socket.close()
-        continue
-    except socket.error as err:
-        logger.error(f'[!] Error connecting to {dest_ip}:{dest_port}: {err}')
-        client_socket.close()
-        continue
+    while True:
+        try:
+            destination_socket.settimeout(5) # set a timeout of 5 seconds for the connect() call
+            destination_socket.connect((dest_ip, dest_port))
+            break
+        except socket.timeout:
+            logger.error(f'[!] Connection to {dest_ip}:{dest_port} timed out')
+        except socket.error as err:
+            logger.error(f'[!] Error connecting to {dest_ip}:{dest_port}: {err}')
+        time.sleep(5) # wait for 5 seconds before trying to connect again
 
+    logger.info(f'[*] Connected to {dest_ip}:{dest_port}')
 
     while True:
         try:
@@ -55,6 +55,18 @@ while True:
             logger.error(f'[!] Error receiving data from {addr[0]}:{addr[1]}: {err}')
             break
 
+        try:
+            data = destination_socket.recv(4096)
+            if not data:
+                break
+            try:
+                client_socket.send(data)                
+            except socket.error as err:
+                logger.error(f'[!] Error sending data to {addr[0]}:{addr[1]}{err}')
+                break
+        except socket.error as err:
+            logger.error(f'[!] Error receiving data from {dest_ip}:{dest_port}: {err}')
+            break
+
     destination_socket.close()
     client_socket.close()
-
