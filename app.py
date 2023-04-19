@@ -35,6 +35,11 @@ while True:
         logger.error(f'[!] Connection to {dest_ip}:{dest_port} timed out')
         client_socket.close()
         continue
+    except socket.error as err:
+        logger.error(f'[!] Error connecting to {dest_ip}:{dest_port}: {err}')
+        client_socket.close()
+        continue
+
 
     while True:
         try:
