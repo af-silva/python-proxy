@@ -1,14 +1,23 @@
 version: '3'
 
 services:
-  myapp:
-    image: python:3.9.16-bullseye
+  app:
+    image: python:3
+    command: python3 /app/app.py
     ports:
-      - "8888:8888"
+      - "8080:8080"
     volumes:
-      - myapp-data:/app/myconfig
-    command: python /app/app.py
-
+      - ./app:/app
+    environment:
+      - APP_SOURCE=/app/app.py
+      - APP_DESTINATION=1.2.3.4:80
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+        
 volumes:
   myapp-data:
     driver: local
+        
