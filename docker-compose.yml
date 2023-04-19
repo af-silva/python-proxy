@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-  pyproxy:
-    image: python:3
-    command: python3 /app/app.py
+  app:
+    build: .
+    image: my-app:latest
     ports:
       - "8080:8080"
     volumes:
-      - pyproxy-data:/app
+      - myapp-data:/app
     logging:
       driver: "json-file"
       options:
@@ -17,7 +17,7 @@ services:
       - bridge
         
 volumes:
-  pyproxy-data:
+  myapp-data:
     driver: local
 
 networks:
