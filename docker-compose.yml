@@ -16,10 +16,6 @@ services:
     networks:
       - bridge
         
-volumes:
-  pyproxy-data:
-    driver: local
-
 networks:
   bridge:
     driver: bridge
