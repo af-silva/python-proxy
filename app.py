@@ -41,11 +41,16 @@ while True:
             data = client_socket.recv(4096)
             if not data:
                 break
-            destination_socket.send(data)
-            logger.info(f'[+] Sent {len(data)} bytes to {dest_ip}:{dest_port}')
-        except BrokenPipeError:
-            logger.error(f'[!] Connection to {dest_ip}:{dest_port} closed unexpectedly')
+            try:
+                destination_socket.send(data)
+                logger.info(f'[+] Sent {len(data)} bytes to {dest_ip}:{dest_port}')
+            except socket.error as err:
+                logger.error(f'[!] Error sending data to {dest_ip}:{dest_port}: {err}')
+                break
+        except socket.error as err:
+            logger.error(f'[!] Error receiving data from {addr[0]}:{addr[1]}: {err}')
             break
 
     destination_socket.close()
     client_socket.close()
+
