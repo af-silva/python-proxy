@@ -19,7 +19,6 @@ services:
 volumes:
   pyproxy-data:
     driver: local
-    external: true
         
 networks:
   bridge:
