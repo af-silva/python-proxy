@@ -13,11 +13,13 @@ services:
       options:
         max-size: "10m"
         max-file: "5"
-        
-networks:
-  bridge-network:
-    driver: bridge
+    networks:
+      - bridge
         
 volumes:
   pyproxy-data:
     driver: local
+
+networks:
+  bridge:
+    driver: bridge
