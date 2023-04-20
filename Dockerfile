@@ -1,10 +1,13 @@
-FROM python:3
+FROM python:3-alpine
 
-ENV BIND_IP=0.0.0.0
-ENV BIND_PORT=8080
-ENV DEST_IP=10.0.0.2
-ENV DEST_PORT=80
+COPY config.env .env
 
-COPY app.py /app/
+WORKDIR /app
 
-CMD ["python3", "/app/app.py"]
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python3", "-m", "dotenv", "-f", ".env", "app.py"]

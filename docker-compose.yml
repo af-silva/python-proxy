@@ -19,6 +19,8 @@ services:
 volumes:
   pyproxy-data:
     driver: local
+    name: proxy-data
+    external: false
         
 networks:
   bridge:

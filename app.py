@@ -12,12 +12,15 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+# Load environment variables
 bind_ip = os.environ['BIND_IP']
 bind_port = int(os.environ['BIND_PORT'])
 dest_ip = os.environ['DEST_IP']
 dest_port = int(os.environ['DEST_PORT'])
 
+# Create a socket object for the source endpoint
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server.bind((bind_ip, bind_port))
 server.listen(5)
 
@@ -28,17 +31,19 @@ while True:
 
     logger.info(f'[*] Accepted connection from {addr[0]}:{addr[1]}')
 
+    # Create a socket object for the destination endpoint
     destination_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
     while True:
         try:
             destination_socket.settimeout(5) # set a timeout of 5 seconds for the connect() call
             destination_socket.connect((dest_ip, dest_port))
             break
         except socket.timeout:
-            logger.error(f'[!] Connection to {dest_ip}:{dest_port} timed out')
+            logger.debug(f'[!] Connection to {dest_ip}:{dest_port} timed out')
         except socket.error as err:
             logger.error(f'[!] Error connecting to {dest_ip}:{dest_port}: {err}')
-        time.sleep(5) # wait for 5 seconds before trying to connect again
+        time.sleep(1) # wait for 1 second before trying to connect again
 
     logger.info(f'[*] Connected to {dest_ip}:{dest_port}')
 
