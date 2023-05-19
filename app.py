@@ -5,7 +5,7 @@ import sys
 import time
 
 # Configure logging
-__version = "1.2"
+__version = "1.3"
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(sys.stdout)
@@ -21,7 +21,7 @@ dest_port = int(os.environ['DEST_PORT'])
 
 # Create a socket object for the source endpoint
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 server.bind((bind_ip, bind_port))
 server.listen(5)
 
